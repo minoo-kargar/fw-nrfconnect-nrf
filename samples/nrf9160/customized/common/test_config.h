@@ -18,7 +18,6 @@ extern "C" {
 #define TEST_CONFIG_MAX_MSG_LEN_BYTE 10
 #define TEST_CONFIG_NR_OF_TEST_RUN   5
 
-
 /* CoAP config parameters */
 #define TEST_CONFIG_COAP_TYPE   COAP_TYPE_CON
 #define TEST_CONFIG_COAP_METHOD COAP_METHOD_GET
