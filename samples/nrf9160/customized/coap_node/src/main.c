@@ -73,6 +73,22 @@ static void retransmit_request(struct k_work *work)
 		return;
 	}
 
+	int sent = send(sock, pending->data, pending->len, 0);
+
+	if ( sent > 0 )
+	{
+		struct coap_packet request;
+		u8_t token[8];
+
+		int err = coap_packet_parse(&request, pending->data, pending->len, NULL, 0);
+		if ( err == 0)
+		{
+			coap_header_get_token(&request, token);
+			printk("CoAP request retransmitted: token 0x%02x%02x, len:%d\n", token[1], token[0], sent);			
+		}
+
+	}
+
 	if (!coap_pending_cycle(pending)) {
 		k_free(pending->data);
 		coap_pending_clear(pending);
@@ -274,16 +290,20 @@ static int client_get_send(void)
 
 	err = send(sock, request.data, request.offset, 0);
 
+	if ( err < 0)
+	{
+		printk("Failed to send CoAP request, %d\n", errno);
+	}
+	else
+	{
+		printk("CoAP request sent: token 0x%04x, len:%d\n", next_token, request.offset);
+	}
+
 	if (TEST_CONFIG_COAP_TYPE == COAP_TYPE_CON ){
 		if ( err < 0 )
 		{
-			printk("Failed to send CoAP request, %d\n", errno);
 			k_free(data);
 			coap_pending_clear(&pending);
-		}
-		else
-		{
-			printk("CoAP request sent: token 0x%04x, len:%d\n", next_token, sizeof(coap_buf));
 		}
 		return err;
 	}
@@ -380,7 +400,7 @@ static int send_burst(uint32_t pck_nr, uint16_t pck_itt)
 	{
 		if (k_uptime_get() >= next_msg_time) {
 			err = client_get_send();
-			if (err != 0) {
+			if (err < 0) {
 				printk("Failed to send GET request, exit...\n");
 				break;
 			}
