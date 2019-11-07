@@ -28,7 +28,7 @@ config MQTT_MAX_CLIENTS
 
 config MQTT_KEEPALIVE
 	int "Maximum number of clients Keep alive time for MQTT (in seconds)"
-	default 60
+	default 120
 	help
 	  Keep alive time for MQTT (in seconds). Sending of Ping Requests to
 	  keep the connection alive are governed by this value.

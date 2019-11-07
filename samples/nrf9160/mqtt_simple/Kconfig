@@ -7,11 +7,11 @@
 menu "MQTT simple sample"
 config MQTT_PUB_TOPIC
 	string "MQTT publish topic"
-	default "my/publish/topic"
+	default "test"
 
 config MQTT_SUB_TOPIC
 	string "MQTT subscribe topic"
-	default "my/subscribe/topic"
+	default "test"
 
 config MQTT_CLIENT_ID
 	string "MQTT Client ID"
@@ -19,7 +19,7 @@ config MQTT_CLIENT_ID
 
 config MQTT_BROKER_HOSTNAME
 	string "MQTT broker hostname"
-	default "iot.eclipse.org"
+	default "storo.nntb.no"
 
 config MQTT_BROKER_PORT
 	int "MQTT broker port"
