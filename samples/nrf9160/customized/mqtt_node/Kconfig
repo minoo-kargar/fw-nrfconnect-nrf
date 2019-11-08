@@ -46,8 +46,8 @@ config TEST_DURATION
 	default 60
 
 config TEST_MQTT_QOS 
-	int "MQTT QoS type"
-	default 1
+	int "MQTT QoS type, MQTT_QOS_0_AT_MOST_ONCE: 0x00, MQTT_QOS_1_AT_LEAST_ONCE: 0x01, MQTT_QOS_2_EXACTLY_ONCE: 0x02"
+	default 0
 endmenu
 
 menu "Zephyr Kernel"

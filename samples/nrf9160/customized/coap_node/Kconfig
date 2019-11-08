@@ -39,11 +39,11 @@ config TEST_DURATION
 	default 60
 
 config TEST_COAP_TYPE
-   int "CoAP message type"
+   int "CoAP message type, COAP_TYPE_CON: 0, COAP_TYPE_NON_CON: 1,"
    default 1
 
 config TEST_COAP_METHOD 
-	int "CoAP method"
+	int "CoAP method, 	COAP_METHOD_GET: 1, COAP_METHOD_POST: 2, COAP_METHOD_PUT: 3, COAP_METHOD_DELETE: 4"
 	default 1
 
 endmenu
