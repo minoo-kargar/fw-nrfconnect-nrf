@@ -14,9 +14,9 @@
 #include "test_config.h"
 
 /* Buffers for MQTT client. */
-static u8_t rx_buffer[TEST_CONFIG_MAX_MSG_LEN_BYTE];
-static u8_t tx_buffer[TEST_CONFIG_MAX_MSG_LEN_BYTE];
-static u8_t payload_buf[TEST_CONFIG_MAX_MSG_LEN_BYTE];
+static u8_t rx_buffer[CONFIG_TEST_MAX_MSG_LEN_BYTE];
+static u8_t tx_buffer[CONFIG_TEST_MAX_MSG_LEN_BYTE];
+static u8_t payload_buf[CONFIG_TEST_MAX_MSG_LEN_BYTE];
 
 /* The mqtt client struct */
 static struct mqtt_client client;
@@ -305,7 +305,7 @@ static int send_publish(uint32_t pck_nr, uint16_t pck_itt)
 		if (k_uptime_get() >= next_msg_time) 
 		{
 			
-			err = data_publish(&client, TEST_CONFIG_MQTT_QOS,
+			err = data_publish(&client, CONFIG_TEST_MQTT_QOS,
 				payload_buf, sizeof(payload_buf));
 
 			if (err != 0) {
@@ -338,8 +338,8 @@ static int send_publish(uint32_t pck_nr, uint16_t pck_itt)
 void main(void)
 {
 	int err;
-	int nr_of_runs = 0;
-
+	int test_duration_ms = CONFIG_TEST_DURATION * 60000;
+	
 	printk("The MQTT simple sample started\n");
 
 	modem_configure();
@@ -358,25 +358,26 @@ void main(void)
 		return;
 	}
 
-	if (wait_and_rcv(TEST_CONFIG_SEND_INTERVAL_MS) < 0) {
+	if (wait_and_rcv(CONFIG_TEST_SEND_INTERVAL_MS) < 0) {
 
 		printk("Poll error, exit...\n");
 		return;
 	}
 
-	while ( nr_of_runs < TEST_CONFIG_NR_OF_TEST_RUN ) 
+	s64_t test_timeout   = k_uptime_get() + K_MSEC(test_duration_ms);
+
+	while ( k_uptime_get() < test_timeout ) 
 	{
-		if ( send_publish(TEST_CONFIG_PCK_NR_IN_BURST, TEST_CONFIG_PCK_ITT_MS) != 0 )
+		if ( send_publish(CONFIG_TEST_PCK_NR_IN_BURST, CONFIG_TEST_PCK_ITT_MS) != 0 )
 		{
 			break;
 		}
 
-		if ( wait_and_rcv(TEST_CONFIG_SEND_INTERVAL_MS) != 0 )
+		if ( wait_and_rcv(CONFIG_TEST_SEND_INTERVAL_MS) != 0 )
 		{
 			break;
 		}
 
-		nr_of_runs++;
 	}
 
 	printk("Disconnecting MQTT client...\n");
