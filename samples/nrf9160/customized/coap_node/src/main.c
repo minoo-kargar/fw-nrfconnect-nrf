@@ -22,7 +22,7 @@ static struct pollfd fds;
 static struct sockaddr_storage server;
 static u16_t next_token;
 
-static u8_t coap_buf[TEST_CONFIG_MAX_MSG_LEN_BYTE];
+static u8_t coap_buf[CONFIG_TEST_MAX_MSG_LEN_BYTE];
 /* Request Time and Data */
 static const char timestamp[] = "AT+CCLK?";
 static char cclk_buf[200];
@@ -256,17 +256,17 @@ static int client_get_send(void)
 	struct coap_packet request;
 	struct coap_pending pending;
 
-	data = (u8_t *)k_malloc(TEST_CONFIG_MAX_MSG_LEN_BYTE);
+	data = (u8_t *)k_malloc(CONFIG_TEST_MAX_MSG_LEN_BYTE);
 	if (!data) {
 		return -ENOMEM;
 	}
 
 	next_token++;
 
-	err = coap_packet_init(&request, data, TEST_CONFIG_MAX_MSG_LEN_BYTE,
-			       APP_COAP_VERSION, TEST_CONFIG_COAP_TYPE,
+	err = coap_packet_init(&request, data, CONFIG_TEST_MAX_MSG_LEN_BYTE,
+			       APP_COAP_VERSION, CONFIG_TEST_COAP_TYPE,
 			       sizeof(next_token), (u8_t *)&next_token,
-			       TEST_CONFIG_COAP_METHOD, coap_next_id());
+			       CONFIG_TEST_COAP_METHOD, coap_next_id());
 	if (err < 0) {
 		printk("Failed to create CoAP request, %d\n", err);
 		goto end;
@@ -280,7 +280,7 @@ static int client_get_send(void)
 		goto end;
 	}
 
-	if (TEST_CONFIG_COAP_TYPE == COAP_TYPE_CON) {
+	if (CONFIG_TEST_COAP_TYPE == COAP_TYPE_CON) {
 		err = create_pending_request(&request, (struct sockaddr *)&server, &pending);
 		if (err < 0) {
 			printk("Failed to create pending request, %d\n", err);
@@ -299,7 +299,7 @@ static int client_get_send(void)
 		printk("CoAP request sent: token 0x%04x, len:%d\n", next_token, request.offset);
 	}
 
-	if (TEST_CONFIG_COAP_TYPE == COAP_TYPE_CON ){
+	if (CONFIG_TEST_COAP_TYPE == COAP_TYPE_CON ){
 		if ( err < 0 )
 		{
 			k_free(data);
@@ -428,7 +428,7 @@ static int send_burst(uint32_t pck_nr, uint16_t pck_itt)
 void main(void)
 {
 	int err = 0;
-	int nr_of_runs = 0;
+	int test_duration_ms = CONFIG_TEST_DURATION * 60000;
 
 	print_timestamp();
 
@@ -448,20 +448,21 @@ void main(void)
 
 	k_delayed_work_init(&retransmit_work, retransmit_request);
 
-	while ( nr_of_runs < TEST_CONFIG_NR_OF_TEST_RUN )
+	s64_t test_timeout   = k_uptime_get() + K_MSEC(test_duration_ms);
+
+	while ( k_uptime_get() < test_timeout )
 	{
-		err = send_burst(TEST_CONFIG_PCK_NR_IN_BURST, TEST_CONFIG_PCK_ITT_MS); // Send 10 packets with 5s itt
+		err = send_burst(CONFIG_TEST_PCK_NR_IN_BURST, CONFIG_TEST_PCK_ITT_MS); // Send 10 packets with 5s itt
 		if (err != 0)
 		{
 			break;
 		}
 
-		if ( wait_and_rcv(TEST_CONFIG_SEND_INTERVAL_MS) != 0 )
+		if ( wait_and_rcv(CONFIG_TEST_SEND_INTERVAL_MS) != 0 )
 		{
 			break;
 		}
 
-		nr_of_runs++;
 	}
 	
 

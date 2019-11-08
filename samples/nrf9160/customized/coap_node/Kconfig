@@ -18,6 +18,34 @@ config COAP_SERVER_PORT
 	int "CoAP server port"
 	default 5683
 
+config TEST_SEND_INTERVAL_MS 
+	int "Time in between packet bursts in milliseconds"
+	default 60000
+
+config TEST_PCK_ITT_MS
+	int "Packet intertransmisson time in milliseconds"
+	default 5000
+
+config TEST_PCK_NR_IN_BURST  
+	int "Number of packets in a burst"
+	default 1
+
+config TEST_MAX_MSG_LEN_BYTE
+	int "CoAP packet payload length in bytes"
+	default 10
+
+config TEST_DURATION
+	int "Test duration in minutes"
+	default 60
+
+config TEST_COAP_TYPE
+   int "CoAP message type"
+   default 1
+
+config TEST_COAP_METHOD 
+	int "CoAP method"
+	default 1
+
 endmenu
 
 menu "Zephyr Kernel"
