@@ -25,31 +25,6 @@ config MQTT_BROKER_PORT
 	int "MQTT broker port"
 	default 1883
 
-config TEST_SEND_INTERVAL_MS 
-	int "Time in between packet bursts in milliseconds"
-	default 60000
-
-config TEST_PCK_ITT_MS
-	int "Packet intertransmisson time in milliseconds"
-	default 5000
-
-config TEST_PCK_NR_IN_BURST  
-	int "Number of packets in a burst"
-	default 1
-
-config TEST_MAX_MSG_LEN_BYTE
-	int "CoAP packet payload length in bytes"
-	default 10
-
-config TEST_DURATION
-	int "Test duration in minutes"
-	default 60
-
-config TEST_MQTT_QOS 
-	int "MQTT QoS type, MQTT_QOS_0_AT_MOST_ONCE: 0x00, MQTT_QOS_1_AT_LEAST_ONCE: 0x01, MQTT_QOS_2_EXACTLY_ONCE: 0x02"
-	default 0
-endmenu
-
 menu "Zephyr Kernel"
 source "$ZEPHYR_BASE/Kconfig.zephyr"
 endmenu
