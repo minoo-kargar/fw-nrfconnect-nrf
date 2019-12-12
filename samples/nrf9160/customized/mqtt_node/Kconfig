@@ -24,6 +24,7 @@ config MQTT_BROKER_HOSTNAME
 config MQTT_BROKER_PORT
 	int "MQTT broker port"
 	default 1883
+endmenu
 
 menu "Zephyr Kernel"
 source "$ZEPHYR_BASE/Kconfig.zephyr"
